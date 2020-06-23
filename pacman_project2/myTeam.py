@@ -77,6 +77,7 @@ class BaseMyTeam(CaptureAgent):
     CaptureAgent.registerInitialState(self, gameState)
     self.start = gameState.getAgentPosition(self.index)
     self.counter = 0
+    #self.ind = 0
     '''
     Your initialization code goes here, if you need any.
     '''
@@ -181,21 +182,29 @@ class OffenseMyTeam(BaseMyTeam):
           bestDist = dist
       return bestAction
 
-    if self.counter > 0:
-      self.counter -= 1
+    pos = gameState.getAgentPosition(self.index)
+    enemies1 = [gameState.getAgentState(i) for i in self.getOpponents(gameState)]
+    defenders1 = [a for a in enemies1 if not a.isPacman and a.getPosition() != None]
+    if len(defenders1) > 0:
+      dists = [self.getMazeDistance(pos, a.getPosition()) for a in defenders1]
 
-      if Directions.EAST in actions and len(actions) > 2:
-        actions.remove(Directions.EAST)
-      if Directions.STOP in actions:
-        actions.remove(Directions.STOP)
-      return random.choice(actions)
+      if min(dists) < 10 and min(dists) > 5 and self.ind == 1:
+        print("usao")
+        print(self.ind)
+        if Directions.EAST in actions and len(actions) > 2:
+          actions.remove(Directions.EAST)
+        if Directions.STOP in actions:
+          actions.remove(Directions.STOP)
+        return random.choice(actions)
 
 
     if self.ind == 1:
       bestDist = 9999
       val = -9999
-      evaluacija = 0
+      evaluacija = -9999
       for action in actions:
+        if action == Directions.STOP:
+          continue
         successor = self.getSuccessor(gameState, action)
         pos2 = successor.getAgentPosition(self.index)
         pomval = val
@@ -205,21 +214,65 @@ class OffenseMyTeam(BaseMyTeam):
           dists = [self.getMazeDistance(pos2, a.getPosition()) for a in defenders]
           pomval = min(dists)
 
-
         dist = self.getMazeDistance(self.start, pos2)
-        if dist < bestDist:
+        pomState = gameState.deepCopy()
+
+        nextActionVal = self.depthAction(pomState.generateSuccessor(self.index, action), pomval, pos2, 2)
+        pom = -dist + 100 * pomval + nextActionVal
+        if pom > evaluacija:
           bestAction = action
           bestDist = dist
           val = pomval
+          evaluacija = pom
 
       successor = self.getSuccessor(gameState, bestAction)
       if not successor.getAgentState(self.index).isPacman:
         self.counter = 20
       else:
         self.counter = 0
+      print(bestAction)
       return bestAction
-
+    #print(bestActions)
     return random.choice(bestActions)
+
+  def depthAction(self, gameState, currDist, agentPos, depth):
+    actions = gameState.getLegalActions(self.index)
+    if depth == 0:
+
+      for action in actions:
+        if action == Directions.STOP:
+          continue
+        successor = self.getSuccessor(gameState, action)
+        pos2 = successor.getAgentPosition(self.index)
+        pomval = -9999
+        enemies = [successor.getAgentState(i) for i in self.getOpponents(successor)]
+        defenders = [a for a in enemies if not a.isPacman and a.getPosition() != None]
+        if len(defenders) > 0:
+          dists = [self.getMazeDistance(pos2, a.getPosition()) for a in defenders]
+          pomval = min(dists)
+        if currDist <= pomval and agentPos != pos2:
+          return pomval
+    else:
+      for action in actions:
+        if action == Directions.STOP:
+          continue
+        successor = self.getSuccessor(gameState, action)
+        pos2 = successor.getAgentPosition(self.index)
+        pomval = -9999
+        enemies = [successor.getAgentState(i) for i in self.getOpponents(successor)]
+        defenders = [a for a in enemies if not a.isPacman and a.getPosition() != None]
+        if len(defenders) > 0:
+          dists = [self.getMazeDistance(pos2, a.getPosition()) for a in defenders]
+          pomval = min(dists)
+
+        dist = self.getMazeDistance(self.start, pos2)
+        pomState = gameState.deepCopy()
+
+        nextActionVal = self.depthAction(pomState.generateSuccessor(self.index, action), currDist, agentPos, depth - 1)
+        if nextActionVal > 0:
+          return  nextActionVal
+    return 0
+
 
   def getFeatures(self, gameState, action):
     features = util.Counter()
@@ -238,11 +291,14 @@ class OffenseMyTeam(BaseMyTeam):
     defenders = [a for a in enemies if not a.isPacman and a.getPosition() != None]
     #print(len(defenders))
     #features['distanceToGhost'] = 0;
+    if myPos == self.start:
+      self.counter = 0
     if len(defenders) > 0 :
       dists = [self.getMazeDistance(myPos, a.getPosition()) for a in defenders]
-      if min(dists) <= 4:
+      if min(dists) <= 5:
         features['distanceToGhost'] = min(dists)
         self.ind = 1
+
       #print (min(dists))
 
     if action == Directions.STOP: features['stop'] = -1000
