@@ -76,7 +76,9 @@ class BaseMyTeam(CaptureAgent):
     '''
     CaptureAgent.registerInitialState(self, gameState)
     self.start = gameState.getAgentPosition(self.index)
-    self.counter = 0
+    self.prev = Directions.STOP
+    self.capsules = -1
+    self.counter = -1
     #self.ind = 0
     '''
     Your initialization code goes here, if you need any.
@@ -165,13 +167,28 @@ class OffenseMyTeam(BaseMyTeam):
     # start = time.time()
     values = [self.evaluate(gameState, a) for a in actions]
     # print 'eval time for agent %d: %.4f' % (self.index, time.time() - start)
-
+    if(self.ind == 1):
+      print (values)
+      print (actions)
     maxValue = max(values)
     bestActions = [a for a, v in zip(actions, values) if v == maxValue]
 
     foodLeft = len(self.getFood(gameState).asList())
 
+    if self.counter > 0:
+      self.counter = self.counter - 1
+
+    if(self.capsules > len(self.getCapsules(gameState))):
+      self.counter = 39
+
+    self.capsules = len(self.getCapsules(gameState))
+
+    if self.prev in bestActions and self.ind == 1:
+      print ("ponavlja najbolji")
+      print (bestActions)
+
     if foodLeft <= 2:
+      #print ("vraca")
       bestDist = 9999
       for action in actions:
         successor = self.getSuccessor(gameState, action)
@@ -180,62 +197,11 @@ class OffenseMyTeam(BaseMyTeam):
         if dist < bestDist:
           bestAction = action
           bestDist = dist
+      self.prev = bestAction
       return bestAction
 
-    pos = gameState.getAgentPosition(self.index)
-    enemies1 = [gameState.getAgentState(i) for i in self.getOpponents(gameState)]
-    defenders1 = [a for a in enemies1 if not a.isPacman and a.getPosition() != None]
-    if len(defenders1) > 0:
-      dists = [self.getMazeDistance(pos, a.getPosition()) for a in defenders1]
-      myState = gameState.getAgentState(self.index)
-      if min(dists) < 15 and min(dists) > 5 and myState.isPacman:
-        #print("usao")
-        #print(self.ind)
-        if Directions.EAST in actions and len(actions) > 2:
-          actions.remove(Directions.EAST)
-        if Directions.STOP in actions:
-          actions.remove(Directions.STOP)
-        return random.choice(actions)
-      #else:
-        #self.ind = 0
-
-
-    if self.ind == 1:
-      bestDist = 9999
-      val = -9999
-      evaluacija = -9999
-      for action in actions:
-        if action == Directions.STOP:
-          continue
-        successor = self.getSuccessor(gameState, action)
-        pos2 = successor.getAgentPosition(self.index)
-        pomval = val
-        enemies = [successor.getAgentState(i) for i in self.getOpponents(successor)]
-        defenders = [a for a in enemies if not a.isPacman and a.getPosition() != None]
-        if len(defenders) > 0:
-          dists = [self.getMazeDistance(pos2, a.getPosition()) for a in defenders]
-          pomval = min(dists)
-
-        dist = self.getMazeDistance(self.start, pos2)
-        pomState = gameState.deepCopy()
-
-        nextActionVal = self.depthAction(pomState.generateSuccessor(self.index, action), pomval, pos2, 1)
-        pom = -dist + 100 * pomval + nextActionVal
-        if pom > evaluacija:
-          bestAction = action
-          bestDist = dist
-          val = pomval
-          evaluacija = pom
-
-      successor = self.getSuccessor(gameState, bestAction)
-      if not successor.getAgentState(self.index).isPacman:
-        self.counter = 20
-      else:
-        self.counter = 0
-      #print(bestAction)
-      return bestAction
-    #print(bestActions)
-    return random.choice(bestActions)
+    self.prev = random.choice(bestActions)
+    return self.prev
 
   def depthAction(self, gameState, currDist, agentPos, depth):
     actions = gameState.getLegalActions(self.index)
@@ -284,6 +250,7 @@ class OffenseMyTeam(BaseMyTeam):
     features = util.Counter()
     successor = self.getSuccessor(gameState, action)
     foodList = self.getFood(successor).asList()
+    capsuleList = self.getCapsules(successor)
     features['successorScore'] = -len(foodList)#self.getScore(successor)
 
     # Compute distance to the nearest food
@@ -292,26 +259,45 @@ class OffenseMyTeam(BaseMyTeam):
       myPos = successor.getAgentState(self.index).getPosition()
       minDistance = min([self.getMazeDistance(myPos, food) for food in foodList])
       features['distanceToFood'] = minDistance
-
+    if action == self.prev:
+      features['repeatAction'] = -1
     enemies = [successor.getAgentState(i) for i in self.getOpponents(successor)]
     defenders = [a for a in enemies if not a.isPacman and a.getPosition() != None]
-    #print(len(defenders))
-    #features['distanceToGhost'] = 0;
-    if myPos == self.start:
-      self.counter = 0
-    if len(defenders) > 0 :
+    if len(defenders) > 0:
       dists = [self.getMazeDistance(myPos, a.getPosition()) for a in defenders]
-      if min(dists) <= 5:
-        features['distanceToGhost'] = min(dists)
-        self.ind = 1
+      realPos = gameState.getAgentState(self.index).getPosition()
+      realDist = [self.getMazeDistance(realPos, a.getPosition()) for a in defenders]
+      if self.counter <= 3:
+        if min(realDist) <= 7:
+          features['distanceToGhost'] = min(dists) #(-2000 succScore retko !=) -15 distFood x * distEnemie
+          if(len(capsuleList) > 0):
+            minCapsuleDist = min([self.getMazeDistance(myPos, capsule) for capsule in capsuleList])
+            features['distanceToCapsule'] = minCapsuleDist
+          #print (minCapsuleDist)
+          features['eatCapsule'] = -len(capsuleList)
+          #print (minCapsuleDist)
+          if Directions.REVERSE[action] == self.prev:
+            features['repeatAction'] = -10
+          #print (features)
+          #print (action)
+          self.ind = 1
+        if min(realDist) <= 5:
+          features['distanceToFood'] = 0
+          features['successorScore'] = -5000
 
+      elif self.counter <= 7:
+        if min(realDist) < self.counter - 3:
+          features["distanceToGhost"] = min(dists) * -500
+          if min(dists) == 0:
+            features["distanceToGhost"] = 1000
       #print (min(dists))
 
-    if action == Directions.STOP: features['stop'] = -1000
+    if action == Directions.STOP: features['stop'] = 1
     return features
 
   def getWeights(self, gameState, action):
-    return {'successorScore': 10, 'distanceToFood': -0.5, "distanceToGhost": 0.5, "stop": 1}
+    return {'successorScore': 1000, 'distanceToFood': -0.5, "distanceToGhost": 5, "stop": -9999, 'repeatAction': 0.3,
+            'distanceToCapsule': -4, 'eatCapsule': 100}
 
 
 class DefenseMyTeam(BaseMyTeam):

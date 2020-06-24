@@ -14,7 +14,7 @@
       <file leaf-file-name="baselineTeam.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/baselineTeam.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="935">
+            <state relative-caret-position="17">
               <caret line="60" column="44" lean-forward="false" selection-start-line="60" selection-start-column="44" selection-end-line="60" selection-end-column="44" />
               <folding>
                 <element signature="e#1083#1121#0" expanded="true" />
@@ -26,8 +26,8 @@
       <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="125" column="39" lean-forward="false" selection-start-line="125" selection-start-column="39" selection-end-line="125" selection-end-column="39" />
+            <state relative-caret-position="891">
+              <caret line="454" column="32" lean-forward="false" selection-start-line="454" selection-start-column="25" selection-end-line="454" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -36,10 +36,10 @@
       <file leaf-file-name="myTeam.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/myTeam.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="190" column="24" lean-forward="false" selection-start-line="190" selection-start-column="24" selection-end-line="190" selection-end-column="24" />
+            <state relative-caret-position="411">
+              <caret line="285" column="44" lean-forward="true" selection-start-line="285" selection-start-column="44" selection-end-line="285" selection-end-column="44" />
               <folding>
-                <element signature="e#8388#9986#0" expanded="false" />
+                <element signature="e#6889#8487#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -48,8 +48,8 @@
       <file leaf-file-name="captureAgents.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/captureAgents.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="195" column="17" lean-forward="false" selection-start-line="195" selection-start-column="6" selection-end-line="195" selection-end-column="17" />
+            <state relative-caret-position="1248">
+              <caret line="210" column="42" lean-forward="false" selection-start-line="210" selection-start-column="41" selection-end-line="210" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -59,13 +59,16 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>counter</find>
       <find>class</find>
       <find>captureAgent</find>
       <find>Directions</find>
       <find>start</find>
       <find>succes</find>
       <find>print</find>
+      <find>isPacman</find>
+      <find>Capsule</find>
+      <find>capsule</find>
+      <find>counter</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -223,7 +226,7 @@
         <state relative-caret-position="4250">
           <caret line="257" column="21" lean-forward="false" selection-start-line="257" selection-start-column="21" selection-end-line="257" selection-end-column="21" />
           <folding>
-            <element signature="e#8388#9986#0" expanded="false" />
+            <element signature="e#6889#8487#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -277,7 +280,7 @@
         <state relative-caret-position="4250">
           <caret line="257" column="21" lean-forward="false" selection-start-line="257" selection-start-column="21" selection-end-line="257" selection-end-column="21" />
           <folding>
-            <element signature="e#8388#9986#0" expanded="false" />
+            <element signature="e#6889#8487#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -313,7 +316,7 @@
         <state relative-caret-position="459">
           <caret line="90" column="32" lean-forward="false" selection-start-line="90" selection-start-column="25" selection-end-line="90" selection-end-column="32" />
           <folding>
-            <element signature="e#8388#9986#0" expanded="false" />
+            <element signature="e#6889#8487#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -348,7 +351,7 @@
         <state relative-caret-position="408">
           <caret line="24" column="60" lean-forward="true" selection-start-line="24" selection-start-column="60" selection-end-line="24" selection-end-column="60" />
           <folding>
-            <element signature="e#8388#9986#0" expanded="false" />
+            <element signature="e#6889#8487#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -391,24 +394,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/baselineTeam.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="60" column="44" lean-forward="false" selection-start-line="60" selection-start-column="44" selection-end-line="60" selection-end-column="44" />
-          <folding>
-            <element signature="e#1083#1121#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="125" column="39" lean-forward="false" selection-start-line="125" selection-start-column="39" selection-end-line="125" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/capture.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -427,20 +412,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/baselineTeam.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="60" column="44" lean-forward="false" selection-start-line="60" selection-start-column="44" selection-end-line="60" selection-end-column="44" />
+          <folding>
+            <element signature="e#1083#1121#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/captureAgents.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="195" column="17" lean-forward="false" selection-start-line="195" selection-start-column="6" selection-end-line="195" selection-end-column="17" />
+        <state relative-caret-position="1248">
+          <caret line="210" column="42" lean-forward="false" selection-start-line="210" selection-start-column="41" selection-end-line="210" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="891">
+          <caret line="454" column="32" lean-forward="false" selection-start-line="454" selection-start-column="25" selection-end-line="454" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/myTeam.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="190" column="24" lean-forward="false" selection-start-line="190" selection-start-column="24" selection-end-line="190" selection-end-column="24" />
+        <state relative-caret-position="411">
+          <caret line="285" column="44" lean-forward="true" selection-start-line="285" selection-start-column="44" selection-end-line="285" selection-end-column="44" />
           <folding>
-            <element signature="e#8388#9986#0" expanded="false" />
+            <element signature="e#6889#8487#0" expanded="false" />
           </folding>
         </state>
       </provider>
