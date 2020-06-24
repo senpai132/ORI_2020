@@ -13,4 +13,5 @@ pacman_project2/.idea/pacman_project2.iml
 pacman_project2/.idea/modules.xml
 pacman_project2/.idea/misc.xml
 *.xml
+pacman_project2/__pycache__/myTeam.cpython-38.pyc
 pacman_project2/score

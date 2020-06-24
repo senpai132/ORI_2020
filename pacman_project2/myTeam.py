@@ -217,7 +217,7 @@ class OffenseMyTeam(BaseMyTeam):
         dist = self.getMazeDistance(self.start, pos2)
         pomState = gameState.deepCopy()
 
-        nextActionVal = self.depthAction(pomState.generateSuccessor(self.index, action), pomval, pos2, 2)
+        nextActionVal = self.depthAction(pomState.generateSuccessor(self.index, action), pomval, pos2, 1)
         pom = -dist + 100 * pomval + nextActionVal
         if pom > evaluacija:
           bestAction = action
@@ -230,13 +230,17 @@ class OffenseMyTeam(BaseMyTeam):
         self.counter = 20
       else:
         self.counter = 0
-      print(bestAction)
+      #print(bestAction)
       return bestAction
     #print(bestActions)
     return random.choice(bestActions)
 
   def depthAction(self, gameState, currDist, agentPos, depth):
     actions = gameState.getLegalActions(self.index)
+    if len(actions) <= 2:
+      print(depth)
+      print(actions)
+      return 0;
     if depth == 0:
 
       for action in actions:
@@ -251,7 +255,7 @@ class OffenseMyTeam(BaseMyTeam):
           dists = [self.getMazeDistance(pos2, a.getPosition()) for a in defenders]
           pomval = min(dists)
         if currDist <= pomval and agentPos != pos2:
-          return pomval
+          return 1000
     else:
       for action in actions:
         if action == Directions.STOP:
