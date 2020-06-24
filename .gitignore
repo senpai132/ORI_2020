@@ -15,3 +15,4 @@ pacman_project2/.idea/misc.xml
 *.xml
 pacman_project2/__pycache__/myTeam.cpython-38.pyc
 pacman_project2/score
+pacman_project2/.idea/workspace.xml

@@ -187,15 +187,17 @@ class OffenseMyTeam(BaseMyTeam):
     defenders1 = [a for a in enemies1 if not a.isPacman and a.getPosition() != None]
     if len(defenders1) > 0:
       dists = [self.getMazeDistance(pos, a.getPosition()) for a in defenders1]
-
-      if min(dists) < 10 and min(dists) > 5 and self.ind == 1:
-        print("usao")
-        print(self.ind)
+      myState = gameState.getAgentState(self.index)
+      if min(dists) < 15 and min(dists) > 5 and myState.isPacman:
+        #print("usao")
+        #print(self.ind)
         if Directions.EAST in actions and len(actions) > 2:
           actions.remove(Directions.EAST)
         if Directions.STOP in actions:
           actions.remove(Directions.STOP)
         return random.choice(actions)
+      #else:
+        #self.ind = 0
 
 
     if self.ind == 1:
@@ -238,8 +240,8 @@ class OffenseMyTeam(BaseMyTeam):
   def depthAction(self, gameState, currDist, agentPos, depth):
     actions = gameState.getLegalActions(self.index)
     if len(actions) <= 2:
-      print(depth)
-      print(actions)
+      #print(depth)
+      #print(actions)
       return 0;
     if depth == 0:
 
