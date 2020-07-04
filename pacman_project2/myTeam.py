@@ -239,7 +239,7 @@ class OffenseMyTeam(BaseMyTeam):
       self.capsules = len(self.getCapsules(gameState))
 
       self.prev = random.choice(bestActions)
-        
+
     return self.prev
 
 
