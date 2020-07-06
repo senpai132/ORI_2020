@@ -136,11 +136,11 @@ class XRAYClassification():
 class Net(nn.Module):
     def __init__(self):
         super().__init__() # just run the init of parent class (nn.Module)
-        self.conv1 = nn.Conv2d(1, 32, 5) # input is 1 image, 32 output channels, 5x5 kernel / window
-        self.conv2 = nn.Conv2d(32, 64, 5) # input is 32, bc the first layer output 32. Then we say the output will be 64 channels, 5x5 kernel / window
-        self.conv3 = nn.Conv2d(64, 128, 5)
-        #self.conv4 = nn.Conv2d(128, 256, 5)
-        #self.conv5 = nn.Conv2d(256, 512, 5)
+        self.conv1 = nn.Conv2d(1, 8, 5) # input is 1 image, 32 output channels, 5x5 kernel / window
+        self.conv2 = nn.Conv2d(8, 16, 5) # input is 32, bc the first layer output 32. Then we say the output will be 64 channels, 5x5 kernel / window
+        self.conv3 = nn.Conv2d(16, 32, 5)
+        #self.conv4 = nn.Conv2d(32, 64, 5)
+        #self.conv5 = nn.Conv2d(64, 128, 5)
         #self.conv6 = nn.Conv2d(512, 1024, 3)
         #self.conv7 = nn.Conv2d(1024, 2048, 3)
         #self.conv8 = nn.Conv2d(2048, 4096, 2)
@@ -151,15 +151,15 @@ class Net(nn.Module):
         self.convs(x)
 
         self.fc1 = nn.Linear(self._to_linear, 512) #flattening.
-        self.fc2 = nn.Linear(512, 3) # 512 in, 2 out bc we're doing 2 classes (dog vs cat).
+        self.fc2 = nn.Linear(512, 3)
 
     def convs(self, x):
         # max pooling over 2x2
         x = F.max_pool2d(F.leaky_relu(self.conv1(x)), (2, 2))
         x = F.max_pool2d(F.leaky_relu(self.conv2(x)), (2, 2))
-        x = F.max_pool2d(F.leaky_relu(self.conv3(x)), (2, 2))
-        #x = torch.tanh(self.conv4(x))
-        #x = torch.tanh(self.conv5(x))
+        x = F.max_pool2d(F.leaky_relu(self.conv3(x)), (2,2))
+        #x = F.leaky_relu(self.conv4(x))
+        #x = F.leaky_relu(self.conv5(x))
         #x = F.relu(self.conv6(x))
         #x = F.relu(self.conv7(x))
         #x = F.relu(self.conv8(x))
