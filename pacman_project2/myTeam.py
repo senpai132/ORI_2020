@@ -193,13 +193,17 @@ class OffenseMyTeam(BaseMyTeam):
     if gameState.getAgentState(self.index).getPosition() == self.start:
       self.prev = Directions.STOP
       self.constPath = 0
-    if self.repeat == 1:
       self.repeat = 0
-      self.constPath = 1
-      return self.prev
+
     actions = gameState.getLegalActions(self.index)
     actions.remove(Directions.STOP)
-    print (actions)
+    if self.repeat == 1:
+      for action in actions:
+        if action == self.prev:
+          self.repeat = 0
+          self.constPath = 1
+          return self.prev
+    #print (actions)
     if len(actions) == 1:
       self.constPath = 1
       self.prev = Directions.REVERSE[gameState.getAgentState(self.index).configuration.direction]
@@ -224,8 +228,8 @@ class OffenseMyTeam(BaseMyTeam):
     #print (values)
     #print (actions)
     #if not gameState.getAgentState(self.index).isPacman and self.ind == 1:
-    #print (values)
-    #print (actions)
+      print (values)
+      print (actions)
       maxValue = max(values)
       bestActions = [a for a, v in zip(actions, values) if v == maxValue]
 
@@ -237,9 +241,8 @@ class OffenseMyTeam(BaseMyTeam):
       self.counter = min([enemy.scaredTimer for enemy in defenders if min(dists) == self.getMazeDistance(myPos, enemy.getPosition())])
     #print ("Counter: ",self.counter)
       self.capsules = len(self.getCapsules(gameState))
-
+      print ("Akcije", bestActions)
       self.prev = random.choice(bestActions)
-
     return self.prev
 
 
@@ -316,16 +319,12 @@ class OffenseMyTeam(BaseMyTeam):
         if min(dists) > minBoundaryDist:
           features['distanceBoundary'] = 5 * minBoundaryDist
           features['distanceToGhost'] = 10000
-          #print("bezim")
-          #print (action)
-          #print (features)
         else:
           if min([self.getMazeDistance(boundary, a.getPosition()) for a in defenders for boundary in self.boundary]) > minBoundaryDist:
             features['distanceBoundary'] = 5 * minBoundaryDist
             features['distanceToGhost'] = 10000
-            #print (action)
-            #print (features)
-      #print (action, features)
+      print ("SIgurica")
+      print (action, features)
       return features
 
     if len(foodList) > 0: # This should always be True,  but better safe than sorry
@@ -339,6 +338,7 @@ class OffenseMyTeam(BaseMyTeam):
       dists = [self.getMazeDistance(myPos, a.getPosition()) for a in defenders]
       realPos = gameState.getAgentState(self.index).getPosition()
       realDist = [self.getMazeDistance(realPos, a.getPosition()) for a in defenders]
+      realBoundaryDist = min([self.getMazeDistance(realPos, boundary) for boundary in self.boundary])
       #if self.counter > 20:
         #if (len(capsuleList) > 0):
           #minCapsuleDist = min([self.getMazeDistance(myPos, capsule) for capsule in capsuleList])
@@ -354,17 +354,83 @@ class OffenseMyTeam(BaseMyTeam):
             features['distanceToGhost'] = -100
           self.ind = 1
           features['distanceBoundary'] = minBoundaryDist
+
           if(len(capsuleList) > 0):
             minCapsuleDist = min([self.getMazeDistance(myPos, capsule) for capsule in capsuleList])
+            realCapsuleDist = min([self.getMazeDistance(realPos, capsule) for capsule in capsuleList])
             features['distanceToCapsule'] = minCapsuleDist
+            if min(realDist) > min(dists) and minCapsuleDist < realCapsuleDist:
+              if min(dists) > minCapsuleDist:
+                print ("oova greska")
+                features = util.Counter()
+                features['distanceToFood'] = 0
+                features['successorScore'] = 0
+                features['distanceToCapsule'] = minCapsuleDist
+                features['distanceToGhost'] = 10000
+                features['eatCapsule'] = -len(capsuleList)
+                print (action)
+                print (features)
+                return features
+              else:
+                closesetCapsule = [capsule for capsule in capsuleList if self.getMazeDistance(myPos, capsule) == minCapsuleDist][0]
+                if min([self.getMazeDistance(closesetCapsule, a.getPosition()) for a in defenders]) > minCapsuleDist:
+                  print ("bas ovde")
+                  features = util.Counter()
+                  features['distanceToFood'] = 0
+                  features['successorScore'] = 0
+                  features['distanceToCapsule'] = minCapsuleDist
+                  features['distanceToGhost'] = 10000
+                  features['eatCapsule'] = -len(capsuleList)
+                  print (action)
+                  print (features)
+                  return features
           else:
-            features['distanceBoundary'] = minBoundaryDist
-            features['distanceToGhost'] = min(dists)
+            #features['distanceBoundary'] = minBoundaryDist
+            #features['distanceToGhost'] = min(dists)
+            print ("Ovde mozda")
             features['distanceToFood'] = 0
             features['successorScore'] = 0
+            if min(realDist) > min(dists) and realBoundaryDist > minBoundaryDist:
+              if min(dists) > minBoundaryDist:
+                features = util.Counter()
+                features['distanceBoundary'] = minBoundaryDist
+                features['distanceToGhost'] = 10000
+                features['eatCapsule'] = -len(capsuleList)
+                return features
+              else:
+                if min([self.getMazeDistance(boundary, a.getPosition()) for a in defenders for boundary in
+                        self.boundary]) > minBoundaryDist:
+
+                  features = util.Counter()
+                  features['distanceBoundary'] = minBoundaryDist
+                  features['distanceToGhost'] = 10000
+                  features['eatCapsule'] = -len(capsuleList)
+                  return features
+
             #print (action)
             #print (features)
             return features
+          if min(realDist) > min(dists) and realBoundaryDist > minBoundaryDist and minCapsuleDist < realCapsuleDist:
+            if min(dists) > minBoundaryDist:
+              features['distanceToFood'] = 0
+              features['successorScore'] = 0
+              features = util.Counter()
+              features['distanceBoundary'] = minBoundaryDist
+              features['distanceToGhost'] = 10000
+              features['eatCapsule'] = -len(capsuleList)
+              print ("ovde?")
+              return features
+            else:
+              if min([self.getMazeDistance(boundary, a.getPosition()) for a in defenders for boundary in
+                      self.boundary]) > minBoundaryDist:
+                print ("ili ovde")
+                features['distanceToFood'] = 0
+                features['successorScore'] = 0
+                features = util.Counter()
+                features['distanceBoundary'] = minBoundaryDist
+                features['distanceToGhost'] = 10000
+                features['eatCapsule'] = -len(capsuleList)
+                return features
           features['eatCapsule'] = -len(capsuleList)
           #print (minCapsuleDist)
 
@@ -387,12 +453,12 @@ class OffenseMyTeam(BaseMyTeam):
           if min(dists) == 0:
             features["distanceToGhost"] = 1000
       #print (min(dists))
-    #print (action, features)
+    print (action, features)
     return features
 
   def getWeights(self, gameState, action):
     return {'successorScore': 1000, 'distanceToFood': -0.5, "distanceToGhost": 5, "stop": -99999, 'repeatAction': 0.23,
-            'distanceToCapsule': -4, 'eatCapsule': 2000, 'distanceBoundary': -2, 'eaten': 500000, 'valuedAction': 10000,
+            'distanceToCapsule': -4, 'eatCapsule': 2000000, 'distanceBoundary': -2, 'eaten': 5000000, 'valuedAction': 10000,
             'borderMove': -10}
 
 
